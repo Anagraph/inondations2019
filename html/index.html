@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset='utf-8'/>
+    <title>Inondations 2019</title>
+    <meta content='initial-scale=1,maximum-scale=1,user-scalable=no' name='viewport'/>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet'/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<style>
+    .mapboxgl-popup {
+        max-width: 400px;
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    }
+</style>
+<style>
+    .map-overlay {
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        position: absolute;
+        width: 25%;
+        top: 0;
+        left: 0;
+        padding: 10px;
+    }
+
+    .map-overlay .map-overlay-inner {
+        background-color: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.20);
+        border-radius: 3px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .map-overlay h2 {
+        line-height: 24px;
+        display: block;
+        margin: 0 0 10px;
+    }
+
+    .map-overlay .legend .circle {
+        height: 10px;
+        width: 100%;
+        z-index: 1000;
+    }
+
+    .legend div span {
+        border-radius: 50%;
+        display: inline-block;
+        height: 10px;
+        margin-right: 5px;
+        width: 10px;
+    }
+
+    .map-overlay input {
+        background-color: transparent;
+        display: inline-block;
+        width: 100%;
+        position: relative;
+        margin: 0;
+        cursor: ew-resize;
+    }
+</style>
+<body>
+
+<div id='map'></div>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamVhbi1kZW5pcy1hdC1hbmFncmFwaCIsImEiOiJjanV5aDZld24weHBzNDBqd2w0ZHlueXZrIn0.tKlNdFZhodkdXW-se6pIjg';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9',
+        center: [-68.13734351262877, 45.137451890638886],
+        zoom: 5
+    });
+
+    map.on('load', function () {
+
+        // map.addLayer({
+        //     'id': 'eau_libre',
+        //     'type': 'fill',
+        //     'source': {
+        //         'type': 'vector',
+        //         //https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019/resource/53ecf495-9320-47b4-9c9f-7edb9cbba0c5
+        //         //2019-04-24 15:55 UTC
+        //         'data': 'mapbox://jean-denis-at-anagraph.3dgwz190'
+        //     },
+        //     'layout': {},
+        //     'paint': {
+        //         'fill-color': '#088',
+        //         'fill-opacity': 0.8
+        //     }
+        // });
+
+
+        map.addLayer({
+            'id': 'points_entraves',
+            'type': 'circle',
+            'source': {
+                'type': 'geojson',
+                //https://geoegl.msp.gouv.qc.ca/ws/inondation2019.fcgi?typename=vg_observation_v_inondation14avril2019_wmst&VERSION=1.1.0&SERVICE=WFS&REQUEST=getfeature&outputformat=geojson&srsName=urn:ogc:def:crs:EPSG::4326
+                'data': '/geogl_msp_gouv_qc_ca_ws/inondation2019.fcgi?typename=vg_observation_v_inondation14avril2019_wmst&VERSION=1.1.0&SERVICE=WFS&REQUEST=getfeature&outputformat=geojson&srsName=urn:ogc:def:crs:EPSG::4326'
+            },
+            'layout': {
+                'visibility': 'visible'
+            },
+            'paint': {
+                'circle-radius': [
+                    'match',
+                    ['get', 'severite'],
+                    'Mineure', 3,
+                    'Extrême', 10,
+                    'Modérée', 5,
+                    'Importante', 7,
+                    /* other */ 1
+                ],
+                "circle-color": [
+                    'match',
+                    ['get', 'urgence'],
+                    'Immédiate', '#e55e5e',
+                    'Passée', '#223b53',
+                    'Future', '#fbb03b',
+                    /* other */ '#ccc'
+                ]
+            }
+        });
+    });
+
+    // When a click event occurs on a feature in the places layer, open a popup at the
+    // location of the feature, with description HTML from its properties.
+    map.on('click', 'points_entraves', function (e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var urgence = e.features[0].properties.urgence;
+        var severite = e.features[0].properties.severite;
+        var date = e.features[0].properties.date_observation;
+        var nom = e.features[0].properties.nom;
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML('<h3>' + "Municipalité : " + nom + '</h3><p>' + "Urgence : " + urgence + '</p> <p>' + "Severité : " + severite + '</p><p>' + "Date : " + date + '</p>')
+            .addTo(map);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', 'points_entraves', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'points_entraves', function () {
+        map.getCanvas().style.cursor = '';
+    });
+</script>
+
+<div class='map-overlay top'>
+    <div class='map-overlay-inner'>
+        <h2>Inondations en 2019</h2>
+    </div>
+    <div class='map-overlay-inner'>
+        <div class='legend' id='legend'>
+            <h3>Urgence</h3>
+            <div><span style='background-color: #e55e5e'></span>Immédiate</div>
+            <div><span style='background-color: #fbb03b'></span>Future</div>
+            <div><span style='background-color: #223b53'></span>Passée</div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

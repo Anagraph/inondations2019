@@ -1,0 +1,10 @@
+version: '3'
+services:
+  tippecanoe:
+    build:
+      context: .
+      dockerfile: tippecanoe.Dockerfile
+    volumes:
+      - ./data:/data
+    stdin_open: true
+    tty: true
