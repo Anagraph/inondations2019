@@ -83,8 +83,8 @@
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v9',
-        center: [-68.13734351262877, 45.137451890638886],
-        zoom: 5
+        center: [ -73.58781, 46.30884],
+        zoom: 6
     });
 
     map.on('load', function () {
@@ -112,7 +112,8 @@
             'source': {
                 'type': 'geojson',
                 //https://geoegl.msp.gouv.qc.ca/ws/inondation2019.fcgi?typename=vg_observation_v_inondation14avril2019_wmst&VERSION=1.1.0&SERVICE=WFS&REQUEST=getfeature&outputformat=geojson&srsName=urn:ogc:def:crs:EPSG::4326
-                'data': '/geogl_msp_gouv_qc_ca_ws/inondation2019.fcgi?typename=vg_observation_v_inondation14avril2019_wmst&VERSION=1.1.0&SERVICE=WFS&REQUEST=getfeature&outputformat=geojson&srsName=urn:ogc:def:crs:EPSG::4326'
+                'data': '/geogl_msp_gouv_qc_ca_ws/inondation2019.fcgi?typename=vg_observation_v_inondation14avril2019_wmst&VERSION=1.1.0&SERVICE=WFS&REQUEST=getfeature&outputformat=geojson&srsName=urn:ogc:def:crs:EPSG::4326',
+		    'attribution': '<a href="https://anagraph.io">© Anagraph</a>, Ministère de la Sécurité publique du Québec',
             },
             'layout': {
                 'visibility': 'visible'
