@@ -89,21 +89,24 @@
 
     map.on('load', function () {
 
-        // map.addLayer({
-        //     'id': 'eau_libre',
-        //     'type': 'fill',
-        //     'source': {
-        //         'type': 'vector',
-        //         //https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019/resource/53ecf495-9320-47b4-9c9f-7edb9cbba0c5
-        //         //2019-04-24 15:55 UTC
-        //         'data': 'mapbox://jean-denis-at-anagraph.3dgwz190'
-        //     },
-        //     'layout': {},
-        //     'paint': {
-        //         'fill-color': '#088',
-        //         'fill-opacity': 0.8
-        //     }
-        // });
+        map.addLayer({
+            'id': 'eau_libre',
+            'type': 'fill',
+            'source': {
+                'type': 'vector',
+                //https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019/resource/53ecf495-9320-47b4-9c9f-7edb9cbba0c5
+                //2019-04-24 15:55 UTC
+                'tiles': ['http://localhost:8081/mbtiles/msp_inondations2019_eaulibre/{z}/{x}/{y}.pbf'],
+                'minzoom': 6,
+                'maxzoom': 14
+            },
+            'source-layer': 'msp_inondations2019_eaulibre',
+            'layout': {},
+            'paint': {
+                'fill-color': '#429bf4',
+                'fill-opacity': 0.6
+            }
+        });
 
 
         map.addLayer({
