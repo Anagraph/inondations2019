@@ -78,14 +78,45 @@
 <body>
 
 <div id='map'></div>
+
+
+<div class='map-overlay top'>
+    <div class='map-overlay-inner'>
+        <h2>Inondations en 2019</h2>
+
+    </div>
+    <div class='map-overlay-inner'>
+        <div class='legend' id='legend'>
+            <h3>Urgence</h3>
+            <div><span style='background-color: #e55e5e'></span>Immédiate</div>
+            <div><span style='background-color: #fbb03b'></span>Future</div>
+            <div><span style='background-color: #223b53'></span>Passée</div>
+            <h3>Eau libre</h3>
+            <div><span style='border-radius: 0%; background-color: #429bf4'></span>Étendue de l'eau</div>
+                    <label>Opacité: <span id='slider-value'>100%</span></label>
+<input id='slider' type='range' min='0' max='100' step='0' value='100' />
+ <!--       <div class='map-overlay-inner'>
+        <label>Transparence: <span id='slider-value'>100%</span></label>
+        <input id='slider' type='range' min='0' max='100' step='0' value='100' />
+        </div>-->
+        </div>
+    </div>
+    
+  
+ 
+    
+</div>
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiamVhbi1kZW5pcy1hdC1hbmFncmFwaCIsImEiOiJjanV5aDZld24weHBzNDBqd2w0ZHlueXZrIn0.tKlNdFZhodkdXW-se6pIjg';
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v9',
-        center: [-73.58781, 46.30884],
-        zoom: 6
+        center: [-73.82048765542174, 46.28533920017361],
+        zoom: 7
     });
+    
+    var slider = document.getElementById('slider');
+    var sliderValue = document.getElementById('slider-value');
 
     map.on('load', function () {
 
@@ -96,18 +127,55 @@
                 'type': 'vector',
                 //https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019/resource/53ecf495-9320-47b4-9c9f-7edb9cbba0c5
                 //2019-04-24 15:55 UTC
-                'tiles': ['http://localhost:8081/mbtiles/msp_inondations2019_eaulibre/{z}/{x}/{y}.pbf'],
+                'tiles': ['https://inondations2019.anagraph.io/mbtiles/msp_inondations2019_eaulibre/{z}/{x}/{y}.pbf'],
                 'minzoom': 6,
                 'maxzoom': 14
             },
             'source-layer': 'msp_inondations2019_eaulibre',
             'layout': {},
             'paint': {
-                'fill-color': '#429bf4',
-                'fill-opacity': 0.6
+                'fill-color': '#429bf4'
             }
         });
-
+        
+         map.addLayer({
+            'id': 'batiment',
+            'type': 'fill',
+            'source': {
+                'type': 'vector',
+                //https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019/resource/53ecf495-9320-47b4-9c9f-7edb9cbba0c5
+                //2019-04-24 15:55 UTC
+                'url': 'mapbox://codelf.9w15j2sy'
+            },
+            'source-layer': 'Quebec',
+             'minzoom' : 10,
+            'layout': {},
+            'paint': {
+                'fill-color': '#bbb'
+                
+            }
+        });
+        
+        map.addLayer({
+            'id': 'eau_normale',
+            'type': 'fill',
+            'source': {
+                'type': 'vector',
+                //https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019/resource/53ecf495-9320-47b4-9c9f-7edb9cbba0c5
+                //2019-04-24 15:55 UTC
+                'url': 'mapbox://mapbox.mapbox-streets-v8'
+            },
+            'source-layer': 'water',
+            'layout': {},
+            'paint': {
+                'fill-color': '#023f79'
+                
+            }
+        });
+        
+        
+        
+        
 
         map.addLayer({
             'id': 'points_entraves',
@@ -141,6 +209,17 @@
                 ]
             }
         });
+        
+        slider.addEventListener('input', function(e) {
+        // Adjust the layers opacity. layer here is arbitrary - this could
+        // be another layer name found in your style or a custom layer
+        // added on the fly using `addSource`.
+        map.setPaintProperty('eau_libre', 'fill-opacity', parseInt(e.target.value, 10) / 100);
+
+        // Value indicator
+        sliderValue.textContent = e.target.value + '%';
+            });
+        
     });
 
     // When a click event occurs on a feature in the places layer, open a popup at the
@@ -186,7 +265,7 @@
     }));
 </script>
 
-<div class='map-overlay top'>
+<!--<div class='map-overlay top'>
     <div class='map-overlay-inner'>
         <h2>Inondations en 2019</h2>
     </div>
@@ -198,9 +277,17 @@
             <div><span style='background-color: #223b53'></span>Passée</div>
             <h3>Eau libre</h3>
             <div><span style='border-radius: 0%; background-color: #429bf4'></span>Étendue de l'eau</div>
-
+        <div class='map-overlay-inner'>
+        <label>Transparence: <span id='slider-value'>100%</span></label>
+        <input id='slider' type='range' min='0' max='100' step='0' value='100' />
+        </div>
         </div>
     </div>
-</div>
+ 
+    
+</div>-->
+
+
+
 </body>
 </html>
