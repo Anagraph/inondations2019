@@ -120,6 +120,16 @@
 
     map.on('load', function () {
 
+        var layers = map.getStyle().layers;
+        // Find the index of the first symbol layer in the map style
+        var firstSymbolId;
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].type === 'symbol') {
+                firstSymbolId = layers[i].id;
+                break;
+            }
+        }
+
         map.addLayer({
             'id': 'eau_libre',
             'type': 'fill',
@@ -136,7 +146,7 @@
             'paint': {
                 'fill-color': '#429bf4'
             }
-        });
+        }, firstSymbolId);
         
          map.addLayer({
             'id': 'batiment',
@@ -154,7 +164,7 @@
                 'fill-color': '#bbb'
                 
             }
-        });
+        }, firstSymbolId);
         
         map.addLayer({
             'id': 'eau_normale',
@@ -171,7 +181,7 @@
                 'fill-color': '#023f79'
                 
             }
-        });
+        }, firstSymbolId);
         
         
         
