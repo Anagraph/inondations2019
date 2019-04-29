@@ -5,7 +5,7 @@ RUN apt-get update \
   && apt-get -y install git build-essential python nodejs npm
 
 RUN mkdir -p /mbtiles-server
-RUN git clone https://github.com/tobinbradley/mbtiles-server.git /mbtiles-server
+RUN git clone https://github.com/Anagraph/mbtiles-server.git /mbtiles-server
 WORKDIR /mbtiles-server
 
 RUN npm install
