@@ -20,6 +20,7 @@ services:
     volumes:
       - ../data/msp_inondations2019_eaulibre.mbtiles:/mbtiles-server/msp_inondations2019_eaulibre.mbtiles
       - ../data/odb_quebec_buildings.mbtiles:/mbtiles-server/odb_quebec_buildings.mbtiles
+      - ../data/quebec_buildings.mbtiles:/mbtiles-server/quebec_buildings.mbtiles
     stdin_open: true
     tty: true
     restart: always
