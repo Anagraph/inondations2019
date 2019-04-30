@@ -219,6 +219,25 @@
                 ]
             }
         });
+
+        map.addLayer({
+            'id': 'routes_inondation',
+            'type': 'line',
+            'source': {
+                'type': 'geojson',
+                //https://geoegl.msp.gouv.qc.ca/ws/inondation2019.fcgi?typename=vg_observation_v_inondation14avril2019_wmst&VERSION=1.1.0&SERVICE=WFS&REQUEST=getfeature&outputformat=geojson&srsName=urn:ogc:def:crs:EPSG::4326
+                'data': '/transport_ws/swtq?service=wfs&request=getfeature&typeNames=ms:evenements&version=2.0.0&srsName=urn:ogc:def:crs:EPSG::4326&outputFormat=geojson',
+                'attribution': '<a href="https://anagraph.io">© Anagraph</a>, <a href="https://www.donneesquebec.ca/recherche/fr/dataset/cartographie-des-inondations-printemps-2019">Ministère de la Sécurité publique du Québec</a>',
+            },
+            "layout": {
+                "line-join": "round",
+                "line-cap": "round"
+            },
+            "paint": {
+                "line-color": "#888",
+                "line-width": 8
+            }
+        });
         
         slider.addEventListener('input', function(e) {
         // Adjust the layers opacity. layer here is arbitrary - this could
